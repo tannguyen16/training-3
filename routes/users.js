@@ -1,10 +1,20 @@
 var express = require('express');
-const userModel = require('../models/users');
+const userModel = require('../models/user');
 var router = express.Router();
 
 /* GET users listing. */
 router.get('/', async (req, res) => {
   const users = await userModel.find({});
+
+  try {
+    res.send(users);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+router.get('/sort', async (req, res) => {
+  const users = await userModel.find({}).sort(req.query.method);
 
   try {
     res.send(users);
@@ -28,7 +38,7 @@ router.delete('/:id', async (req, res) => {
   try {
     const user = await userModel.findByIdAndDelete(req.params.id)
 
-    if (!user) res.status(404).send("No item found")
+    if (!user) res.status(404).send("No user found")
     res.status(200).send()
   } catch (err) {
     res.status(500).send(err)
@@ -44,5 +54,7 @@ router.patch('/:id', async (req, res) => {
     res.status(500).send(err)
   }
 })
+
+
 
 module.exports = router;
