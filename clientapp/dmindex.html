@@ -1,0 +1,301 @@
+<html>
+    <head>
+        <title>Student Grade Table</title>
+        <link href="styles.css" rel="stylesheet" />
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    </head>
+    <body class="dark">
+        <nav class="navigation">
+            <a href="./index.html" class="button">Light Mode</a>
+        </nav>
+        <h1 class="header">Student Grade Table</h4>
+        <table class="table" id="student-table">
+            <thead>
+                <tr>
+                    <th><a href="#" id="thead-name">Name</a</th>
+                    <th><a href="#" id="thead-grade">Grade</a></th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- <tr>
+                    <td>
+                        Name
+                    </td>
+                    <td>
+                        Grade
+                    </td>
+                    <td>
+                        <div class="option">
+                            <button class="option-btn">...</button>
+                            <div class="option-list">
+                                <a href="#">Edit</a>
+                                <a href="#">Delete</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr> -->
+            </tbody>
+            <tfoot>
+                <tr>
+                    <form id="add-form">
+                        <td><input id="name-input" type="text" size="8"
+                                name="name"
+                                placeholder="Name" /></td>
+                        <td><input id="grade-input" type="number" size="3"
+                                name="grade"
+                                placeholder="Grade" /></td>
+                        <td>
+                            <div class="option">
+                                <button class="option-btn" id="btn-add"
+                                    type="submit">Add</button>
+                            </div>
+                        </td>
+                    </form>
+                </tr>
+            </tfoot>
+        </table>
+
+        <script>
+            let SORT = {
+                UNSORTED: 1,
+                INC: 2,
+                DESC: 3,
+            }
+            let id = 5;
+            let nameSorted = SORT.UNSORTED;
+            let gradeSorted = SORT.UNSORTED;
+
+            let students = [];
+
+            $(function() {
+                const table = $('#student-table');
+                const tbody = table.find('tbody');
+                const newNameInput = $('#name-input');
+                const newGradeInput = $('#grade-input');
+                const addForm = $('#add-form');
+
+                table.on('click', '#thead-name', function(event) {
+                    if (nameSorted === SORT.UNSORTED || nameSorted === SORT.DESC) {
+                        students.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1);
+                        nameSorted = SORT.INC;
+                        $('#thead-name').html('Name ↓');
+                        renderTable();
+                    }
+                    else {
+                        students.sort((a, b) => (a.name.toLowerCase() < b.name.toLowerCase()) ? 1 : -1);
+                        nameSorted = SORT.DESC;
+                        $('#thead-name').html('Name ↑');
+                        renderTable();
+                    }
+                });
+
+                table.on('click', '#thead-grade', function(event) {
+                    if (gradeSorted === SORT.UNSORTED || gradeSorted === SORT.DESC) {
+                        students.sort((a, b) => (a.grade > b.grade) ? 1 : -1);
+                        gradeSorted = SORT.INC;
+                        $('#thead-grade').html('Grade ↓');
+                        renderTable();
+                    }
+                    else {
+                        students.sort((a, b) => (a.grade < b.grade) ? 1 : -1);
+                        gradeSorted = SORT.DESC;
+                        $('#thead-grade').html('Grade ↑');
+                        renderTable();
+                    }
+                });
+
+                table.on('click', '.edit-btn', function(event) {
+                    const rowId = parseInt(event.currentTarget.dataset.id);
+                    const student = students.find(student => student.id === rowId);
+                    const row = $(event.currentTarget).parent().parent().parent().parent();
+                    const editOptions = `
+                        <td>
+                            <input type="text" name="name" value="${student.name}" />
+                        </td>
+                        <td>
+                            <input type="number" name="grade" value="${student.grade}" />
+                        </td>
+                        <td>
+                            <button class="reset-btn" data-id="${student.id}" data-name="${student.name}" data-grade="${student.grade}">Reset</button>
+                            <button class="save-btn" data-id="${student.id}">Save</button>
+                            <button class="cancel-btn" data-id="${student.id}">Cancel</button>
+                        </td>
+                    `;
+                    row.html(editOptions);
+                });
+
+                table.on('click', '.reset-btn', function(event) {
+                    const rowId = parseInt(event.currentTarget.dataset.id);
+                    const resetName = event.currentTarget.dataset.name;
+                    const resetGrade = event.currentTarget.dataset.grade;
+                    const row = $(event.currentTarget).parent().parent();
+                    const editOptions = `
+                        <td>
+                            <input type="text" name="name" value="${resetName}" />
+                        </td>
+                        <td>
+                            <input type="number" name="grade" value="${resetGrade}" />
+                        </td>
+                        <td>
+                            <button class="reset-btn" data-id="${rowId}" data-name="${resetName}" data-grade="${resetGrade}">Reset</button>
+                            <button class="save-btn" data-id="${rowId}">Save</button>
+                            <button class="cancel-btn" data-id="${rowId}">Cancel</button>
+                        </td>
+                    `;
+                    row.html(editOptions);
+                });
+
+                table.on('click', '.save-btn', function(event) {
+                    const rowId = parseInt(event.currentTarget.dataset.id);
+                    const inputName = $('input[name=name]').val();
+                    const inputGrade = $('input[name=grade]').val();
+                    if(!inputName){
+                    alert('Student name cannot be empty');
+                        return;
+                    }
+                    if(!inputGrade){
+                        alert('Student grade cannot be empty');
+                        return;
+                    }
+                    if(inputGrade < 0){
+                        alert('Student grade cannot be negative');
+                        return;
+                    }
+                    const student = students.find(student => student.id === rowId);
+                    student.name = inputName;
+                    student.grade = inputGrade;
+                    let row = $(event.currentTarget).parent().parent();
+                    const newRow = $('<tr/>');
+                    const colName = $('<td/>').text(student.name);
+                    const colGrade = $('<td/>').text(student.grade);
+                    const colOptions = $('<td/>').html(`
+                        <div class="option">
+                            <button class="option-btn">...</button>
+                            <div class="option-list">
+                                <a href="#" class="edit-btn" data-id="${rowId}">Edit</a>
+                                <a href="#" class="delete-btn" data-id="${rowId}">Delete</a>
+                            </div>
+                        </div>
+                    `);
+
+                    newRow
+                        .append(colName)
+                        .append(colGrade)
+                        .append(colOptions);
+
+                    row.replaceWith(newRow);
+                });
+
+                table.on('click', '.cancel-btn', function(event) {
+                    const rowId = parseInt(event.currentTarget.dataset.id);
+                    const student = students.find(student => student.id === rowId);
+                    let row = $(event.currentTarget).parent().parent();
+                    const newRow = $('<tr/>');
+                    const colName = $('<td/>').text(student.name);
+                    const colGrade = $('<td/>').text(student.grade);
+                    const colOptions = $('<td/>').html(`
+                        <div class="option">
+                            <button class="option-btn">...</button>
+                            <div class="option-list">
+                                <a href="#" class="edit-btn" data-id="${rowId}">Edit</a>
+                                <a href="#" class="delete-btn" data-id="${rowId}">Delete</a>
+                            </div>
+                        </div>
+                    `);
+
+                    newRow
+                        .append(colName)
+                        .append(colGrade)
+                        .append(colOptions);
+
+                    row.replaceWith(newRow);
+                });
+
+                table.on('click', '.delete-btn', function(event) {
+                    const rowId = parseInt(event.currentTarget.dataset.id);
+                    students = students.filter(student => {
+                        return student.id !== rowId;
+                    });
+
+                    $(event.currentTarget).parent().parent().parent().parent().remove();
+                });
+
+                addForm.on('submit', function(event) {
+                    event.preventDefault();
+
+                    const newName = newNameInput.val();
+                    const newGrade = newGradeInput.val();
+                    const newId = Date.now();
+                    if(!newName){
+                    alert('Student name cannot be empty');
+                        return;
+                    }
+                    if(!newGrade){
+                        alert('Student grade cannot be empty');
+                        return;
+                    }
+                    if(newGrade < 0){
+                        alert('Student grade cannot be negative');
+                        return;
+                    }
+                    students.push({
+                        id: newId,
+                        name: newName,
+                        grade: newGrade,
+                    });
+
+                    addRow(newId, newName, newGrade);
+                    newNameInput.val('');
+                    newGradeInput.val('');
+                });
+
+                function addRow(id, name, grade) {
+                    console.log(id);
+                    console.log(name);
+                    console.log(grade);
+                    const row = $('<tr/>');
+                    const colName = $('<td/>').text(name);
+                    const colGrade = $('<td/>').text(grade);
+                    const colOptions = $('<td/>').html(`
+                        <div class="option">
+                            <button class="option-btn">...</button>
+                            <div class="option-list">
+                                <a href="#" class="edit-btn" data-id="${id}">Edit</a>
+                                <a href="#" class="delete-btn" data-id="${id}">Delete</a>
+                            </div>
+                        </div>
+                    `);
+
+                    row
+                        .append(colName)
+                        .append(colGrade)
+                        .append(colOptions);
+
+                    tbody.append(row);
+                }
+
+                function renderTable() {
+                    tbody.html('');
+                    $.ajax({
+                        url: `http://localhost:3000/api/users`,
+                        success: function(response) {
+                            console.log(response);
+                            students = response;
+                            students.forEach(student => {
+                                console.log(student);
+                                addRow(student._id, student.name, student.grade);
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            alert("Error: " + status + " " + error + " " + xhr.status + " " + xhr.statusText)
+                        }
+                    })
+                }
+
+                renderTable();
+            });
+
+        </script>
+    </body>
+</html>
