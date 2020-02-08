@@ -1,23 +1,18 @@
 var express = require('express');
-const userModel = require('../models/user');
+var userModel = require('../models/user');
 var router = express.Router();
 
 /* GET users listing. */
 router.get('/', async (req, res) => {
-  const users = await userModel.find({});
+  const { sort, dir } = req.query;
 
   try {
-    res.send(users);
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
+    let sortQuery = {}
+    if (sort) sortQuery[sort] = dir;
 
-router.get('/sort', async (req, res) => {
-  const users = await userModel.find({}).sort(req.query.method);
+    const users = await userModel.find({}).sort(sortQuery);
 
-  try {
-    res.send(users);
+    res.status(200).send(users);
   } catch (err) {
     res.status(500).send(err);
   }
@@ -28,7 +23,7 @@ router.post('/', async (req, res) => {
 
   try {
     await user.save();
-    res.send(user);
+    res.status(200).send(user);
   } catch (err) {
     res.status(500).send(err);
   }
@@ -36,21 +31,21 @@ router.post('/', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   try {
-    const user = await userModel.findByIdAndDelete(req.params.id)
+    const user = await userModel.findByIdAndDelete(req.params.id);
 
-    if (!user) res.status(404).send("No user found")
-    res.status(200).send()
+    if (!user) res.status(404).send("No user found");
+    res.status(200).send();
   } catch (err) {
     res.status(500).send(err)
   }
 })
 
-router.patch('/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
-    await userModel.findByIdAndUpdate(req.params.id, req.body)
-    await userModel.save()
-    res.send(user)
+    await userModel.findByIdAndUpdate(req.params.id, req.body);
+    res.status(200).send();
   } catch (err) {
+    console.log(err);
     res.status(500).send(err)
   }
 })

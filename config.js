@@ -1,5 +1,3 @@
-const HOST = "https://localhost:3000/"
-
-export default {
-    HOST
-}
+module.exports = {
+    API_HOST: 'http://localhost:3000/api'
+  }

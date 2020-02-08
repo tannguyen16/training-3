@@ -5,11 +5,12 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
-
+var localConfig = require('./config');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+app.locals.localConfig = localConfig;
 app.use(cors());
 mongoose.connect('mongodb://localhost:27017/training3', { useNewUrlParser: true, useUnifiedTopology: true });
 
