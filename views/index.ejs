@@ -310,6 +310,7 @@
                 }
 
                 function renderTable() {
+                    tbody.html('');
                     students.forEach(student => {
                         addRow(student._id, student.name, student.grade);
                     });
