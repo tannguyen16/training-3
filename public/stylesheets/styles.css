@@ -41,6 +41,7 @@ td {
 }
 
 input[type="text"],
+input[type="tel"],
 select {
   width: 30%;
   padding: 10px 10px;
