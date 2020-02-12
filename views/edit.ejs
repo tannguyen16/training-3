@@ -18,21 +18,41 @@
                 </tr>
             </thead>
             <tbody>
-                <% users.forEach(user=> { %>
+                <% users.forEach( user => { %>
                     <tr>
-                        <td class="name-col"><span
+                        <% if(user._id == id) { %> 
+                            <td><input id="name-input"
+                                form="updateForm"
+                                type="text" size="8"
+                                name="name"
+                                value=<%= name %>
+                                placeholder="Name" required /></td>
+                            <td><input id="grade-input"
+                                form="updateForm"
+                                type="tel" maxlength="3"
+                                value=<%= grade %>
+                                name="grade"
+                                placeholder="Grade" required /></td>
+                            <td>
+                                <a href="/edit/<%= user._id %>/?sort=<%= sort %>&dir=<%= dir %>&name=<%= name %>&grade=<%= grade %>" class="more-btn">Reset</a>
+                                <button form="updateForm" type="submit" class="more-btn">Save</button>
+                                <a href="/?sort=<%= sort %>&dir=<%= dir %>" class="more-btn">Cancel</a>
+                            </td>
+                        <% } else { %>
+                            <td class="name-col"><span
                                 data-field="name"><%= user.name %></span></td>
-                        <td class="grade-col"><span
+                            <td class="grade-col"><span
                                 data-field="grade"><%= user.grade %></span></td>
-                        <td>
-                            <div class="option">
-                                <button class="option-btn">...</button>
-                                <div class="option-list">
+                            <td>
+                                <div class="option">
+                                    <button class="option-btn">...</button>
+                                    <div class="option-list">
                                     <a href="/edit/<%= user._id %>/?sort=<%= sort %>&dir=<%= dir %>&name=<%= user.name %>&grade=<%= user.grade %>" class="edit-btn">Edit</a>
                                     <a href="/delete/<%= user._id %>" class="delete-btn">Delete</a>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
+                            </td>
+                        <% } %>  
                     </tr>
                 <% }); %>
             </tbody>
@@ -62,5 +82,6 @@
             </tfoot>
         </table>
         <form id="studentForm" method="POST" action="/"></form>
+        <form id="updateForm" method="POST" action="/save/<%= id %>/?sort=<%= sort %>&dir=<%= dir %>"></form>
     </body>
 </html>

@@ -37,12 +37,43 @@ router.get('/delete/:id', async function(req, res, next) {
 
 router.get('/edit/:id', async function(req, res, next) {
   try {
-    const user = await UserModel.findByIdAndDelete(req.params.id);
-    if (!user) return;
-    res.redirect('/');
+    let { sort, dir, name, grade } = req.query;
+    dir = dir !== undefined ? dir : -1;
+    let sortQuery = {};
+    if (sort) {
+      sortQuery[sort] = dir;
+    }
+  
+    const users = await UserModel.find().sort(sortQuery);
+
+    if (!users) return;
+    res.render('edit', { title: 'Student Grade Table', users, sort, dir, id : req.params.id, name, grade });
   } catch (err) {
     next(err);
   }
 });
+
+router.post('/save/:id', async function(req, res, next) {
+  try {
+    let { sort, dir } = req.query;
+    dir = dir !== undefined ? dir : -1;
+    let sortQuery = {};
+    if (sort) {
+      sortQuery[sort] = dir;
+    }
+    
+    console.log(req.body);
+    console.log(req.params.id);
+    await UserModel.findByIdAndUpdate(req.params.id, req.body);
+
+    const users = await UserModel.find().sort(sortQuery);
+
+    if (!users) return;
+    res.render('index', { title: 'Student Grade Table', users, sort, dir });
+  } catch (err) {
+    next(err);
+  }
+});
+
 
 module.exports = router;
