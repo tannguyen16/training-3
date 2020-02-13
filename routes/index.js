@@ -13,8 +13,9 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.get('/', async function(req, res, next) {
+const sortDir = (req) => {
   let { sort, dirName, dirGrade } = req.query;
+
   dirName = dirName !== undefined ? dirName : -1;
   dirGrade = dirGrade !== undefined ? dirGrade : -1;
   let sortQuery = {};
@@ -25,7 +26,20 @@ router.get('/', async function(req, res, next) {
     sortQuery[sort] = dirGrade;
   }
 
-  const users = await UserModel.find().sort(sortQuery);
+  const result = {
+    dirName,
+    dirGrade,
+    sortQuery
+  }
+  return result;
+}
+
+router.get('/', async function(req, res, next) {
+  let { sort } = req.query;
+
+  const result = sortDir(req);
+  let { dirName, dirGrade } = result;
+  const users = await UserModel.find().sort(result.sortQuery);
   res.render('index', { title: 'Student Grade Table', users, sort, dirName, dirGrade });
 });
 
@@ -41,18 +55,12 @@ router.get('/delete/:id', async function(req, res, next) {
 
 router.get('/edit/:id', async function(req, res, next) {
   try {
-    let { sort, dirName, dirGrade, name, grade } = req.query;
-    dirName = dirName !== undefined ? dirName : -1;
-    dirGrade = dirGrade !== undefined ? dirGrade : -1;
-    let sortQuery = {};
-    if (sort === 'name') {
-      sortQuery[sort] = dirName;
-    }
-    if (sort === 'grade') {
-      sortQuery[sort] = dirGrade;
-    }
+    let { sort, name, grade } = req.query;
+
+    const result = sortDir(req);
+    let { dirName, dirGrade } = result;
   
-    const users = await UserModel.find().sort(sortQuery);
+    const users = await UserModel.find().sort(result.sortQuery);
 
     if (!users) return;
     res.render('edit', { title: 'Student Grade Table', users, sort, dirName, dirGrade, id : req.params.id, name, grade });
@@ -63,20 +71,14 @@ router.get('/edit/:id', async function(req, res, next) {
 
 router.post('/save/:id', async function(req, res, next) {
   try {
-    let { sort, dirName, dirGrade } = req.query;
-    dirName = dirName !== undefined ? dirName : -1;
-    dirGrade = dirGrade !== undefined ? dirGrade : -1;
-    let sortQuery = {};
-    if (sort === 'name') {
-      sortQuery[sort] = dirName;
-    }
-    if (sort === 'grade') {
-      sortQuery[sort] = dirGrade;
-    }
+    let { sort } = req.query;
+
+    const result = sortDir(req);
+    let { dirName, dirGrade } = result;
   
     await UserModel.findByIdAndUpdate(req.params.id, req.body);
 
-    const users = await UserModel.find().sort(sortQuery);
+    const users = await UserModel.find().sort(result.sortQuery);
 
     if (!users) return;
     res.render('index', { title: 'Student Grade Table', users, sort, dirName, dirGrade });
