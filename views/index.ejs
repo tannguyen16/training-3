@@ -12,8 +12,24 @@
         <table class="table" id="student-table">
             <thead>
                 <tr>
-                    <th><a href="/?sort=name&dir=<%= dir * -1 %>" id="thead-name">Name</a></th>
-                    <th><a href="/?sort=grade&dir=<%= dir * -1 %>" id="thead-grade">Grade</a></th>
+                    <th><a href="/?sort=name&dirName=<%= dirName * -1 %>&dirGrade=<%= dirGrade %>" id="thead-name">
+                        <% if (dirName != 1 && dirName != -1) { %>
+                            <h4>Name</h4>
+                        <% } else if (dirName == 1) { %>
+                            <h4>Name ↓</h4>
+                        <% } else { %>
+                            <h4>Name ↑</h4>
+                        <% } %>
+                        </a></th>
+                    <th><a href="/?sort=grade&dirName=<%= dirName %>&dirGrade=<%= dirGrade * -1 %>" id="thead-grade">
+                        <% if (dirGrade != 1 && dirGrade != -1) { %>
+                            <h4>Grade</h4>
+                        <% } else if (dirGrade == 1) { %>
+                            <h4>Grade ↓</h4>
+                        <% } else { %>
+                            <h4>Grade ↑</h4>
+                        <% } %>
+                        </a></th>
                     <th>Options</th>
                 </tr>
             </thead>
@@ -28,7 +44,7 @@
                             <div class="option">
                                 <button class="option-btn">...</button>
                                 <div class="option-list">
-                                    <a href="/edit/<%= user._id %>/?sort=<%= sort %>&dir=<%= dir %>&name=<%= user.name %>&grade=<%= user.grade %>" class="edit-btn">Edit</a>
+                                    <a href="/edit/<%= user._id %>/?sort=<%= sort %>&dirName=<%= dirName %>&dirGrade=<%= dirGrade %>&name=<%= user.name %>&grade=<%= user.grade %>" class="edit-btn">Edit</a>
                                     <a href="/delete/<%= user._id %>" class="delete-btn">Delete</a>
                                 </div>
                             </div>

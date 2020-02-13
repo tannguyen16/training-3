@@ -170,6 +170,7 @@ select {
   border-radius: 4px;
   background-color: #fff;
   box-sizing: border-box;
+  text-decoration: none;
 }
 
 .more-btn:hover {
