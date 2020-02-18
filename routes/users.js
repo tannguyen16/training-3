@@ -1,5 +1,5 @@
 var express = require('express');
-var userModel = require('../models/user');
+var userModel = require('../models/Users');
 var router = express.Router();
 
 /* GET users listing. */
@@ -18,12 +18,21 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/:id', async (req, res) => {
+  try {
+    const user = await userModel.findById(req.params.id);
+    res.status(200).send(user);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
 router.post('/', async (req, res) => {
   const user = new userModel(req.body);
 
   try {
     await user.save();
-    res.status(200).send(user);
+    res.status(201).send(user);
   } catch (err) {
     res.status(500).send(err);
   }
@@ -42,7 +51,7 @@ router.delete('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
-    await userModel.findByIdAndUpdate(req.params.id, req.body);
+    const user = await userModel.findByIdAndUpdate(req.params.id, req.body);
     res.status(200).send();
   } catch (err) {
     console.log(err);
