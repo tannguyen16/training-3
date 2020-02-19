@@ -14,11 +14,8 @@ chai.use(chaiHttp);
 async function addUserFromArray(array) {
   array.forEach(async user => {
     try {
-      const responsePost = await chai
-                                  .request(app)
-                                  .post('/api/users')
-                                  .send(user);
-      assert.equal(responsePost.status, 201, 'Response status code should be 201');
+      const newUser = new UserModel(user);
+      await newUser.save();
     } catch (err) {
       throw err;
     }
@@ -111,12 +108,9 @@ describe('Users', function() {
       }
     });
 
+    //TODO: Check this
     it('Check response include all users', async function() {
       try {
-        const responseGet = await chai
-                                .request(app)
-                                .get('/api/users');
-  
         await addUserFromArray(testUserArrays.testUsers);
         
         const response = await chai
