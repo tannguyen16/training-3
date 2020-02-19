@@ -39,6 +39,66 @@ describe('Users', function() {
     });
   })
 
+  describe('Get Users', function(){
+    it('Check response length', async function() {
+      try {
+        const responseGet = await chai
+                                .request(app)
+                                .get('/api/users');
+          assert.equal(responseGet.body.length == 0, true, 'Results should be empty');
+          assert.equal(responseGet.status, 200, 'Response status code should be 200');
+  
+        await addUserFromArray(testUserArrays.testUsers);
+        
+        const response = await chai
+                                  .request(app)
+                                  .get('/api/users');
+
+        assert.equal(response.body.length, 4, 'Response length should be 4');
+        assert.equal(response.status, 200, 'Response status code should be 200');
+      } catch (err) {
+        throw err;
+      }
+    });
+
+    it('Get a specific user', async function() {
+      try {
+        await addUserFromArray(testUserArrays.testUsers);
+
+        const responseGet = await chai
+                                .request(app)
+                                .get('/api/users/5e4b801201ca96379c46b859');
+                                
+        assert.equal(responseGet.status, 200, 'Response status code should be 200');
+        assert.equal(responseGet.body.name, testUserArrays.testUsers[0].name, 'Response name is incorrect');
+        assert.equal(responseGet.body.grade, testUserArrays.testUsers[0].grade, 'Response grade is incorrect');
+      } catch (err) {
+        throw err;
+      }
+    });
+
+    //TODO: Check this
+    it('Check response include all users', async function() {
+      try {
+        await addUserFromArray(testUserArrays.testUsers);
+        
+        const response = await chai
+                                  .request(app)
+                                  .get('/api/users');
+        
+        testUserArrays.testUsers.forEach(async user => {
+          try {
+            assert.deepOwnInclude(response.body, user, 'Response should include all users');
+          } catch (err) {
+            throw err;
+          }
+        });
+      } catch (err) {
+        throw err;
+      }
+    });
+  })
+
   describe('Create Users', function(){
     it('Create and return a correct new user', async function() {
       try {
@@ -80,50 +140,6 @@ describe('Users', function() {
         assert.notEqual(response.body.name, wrongUser.name, 'Response body name should not be equal to the wrong user name');
         assert.notEqual(response.body.grade, wrongUser.grade, 'Response body grade should not be equal to the wrong user grade');
 
-      } catch (err) {
-        throw err;
-      }
-    });
-  })
-
-  describe('Get Users', function(){
-    it('Check response length', async function() {
-      try {
-        const responseGet = await chai
-                                .request(app)
-                                .get('/api/users');
-          assert.equal(responseGet.body.length == 0, true, 'Results should be empty');
-          assert.equal(responseGet.status, 200, 'Response status code should be 200');
-  
-        await addUserFromArray(testUserArrays.testUsers);
-        
-        const response = await chai
-                                  .request(app)
-                                  .get('/api/users');
-
-        assert.equal(response.body.length, 4, 'Response length should be 4');
-        assert.equal(response.status, 200, 'Response status code should be 200');
-      } catch (err) {
-        throw err;
-      }
-    });
-
-    //TODO: Check this
-    it('Check response include all users', async function() {
-      try {
-        await addUserFromArray(testUserArrays.testUsers);
-        
-        const response = await chai
-                                  .request(app)
-                                  .get('/api/users');
-        
-        testUserArrays.testUsers.forEach(async user => {
-          try {
-            assert.deepOwnInclude(response.body, user, 'Response should include all users');
-          } catch (err) {
-            throw err;
-          }
-        });
       } catch (err) {
         throw err;
       }
