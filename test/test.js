@@ -70,7 +70,7 @@ describe('Users', function() {
   })
 
   describe('Get Users', function(){
-    it('Check response include all users', async function() {
+    it('Check response length', async function() {
       try {
         const responseGet = await chai
                                 .request(app)
@@ -78,7 +78,7 @@ describe('Users', function() {
           assert.equal(responseGet.body.length == 0, true, 'Results should be empty');
           assert.equal(responseGet.status, 200, 'Response status code should be 200');
   
-        addUserFromArray(testUserArrays.testUsers);
+        await addUserFromArray(testUserArrays.testUsers);
         
         const response = await chai
                                   .request(app)
@@ -98,12 +98,38 @@ describe('Users', function() {
         throw err;
       }
     });
+
+    it('Check response include all users', async function() {
+      try {
+        const responseGet = await chai
+                                .request(app)
+                                .get('/api/users');
+          assert.equal(responseGet.body.length == 0, true, 'Results should be empty');
+          assert.equal(responseGet.status, 200, 'Response status code should be 200');
+  
+        await addUserFromArray(testUserArrays.testUsers);
+        
+        const response = await chai
+                                  .request(app)
+                                  .get('/api/users');
+        
+        testUserArrays.testUsers.forEach(async user => {
+          try {
+            assert.deepOwnInclude(response.body, user, 'Response should include all users');
+          } catch (err) {
+            throw err;
+          }
+        });
+      } catch (err) {
+        throw err;
+      }
+    });
   })
 
   describe('Update User', function(){
     it('Check user should be updated', async function() {
       try {
-        addUserFromArray(testUserArrays.testUsers);
+        await addUserFromArray(testUserArrays.testUsers);
         const newUser =
         {
           _id: "5e4b801201ca96379c46b859",
@@ -116,12 +142,13 @@ describe('Users', function() {
                                 .put('/api/users/5e4b801201ca96379c46b859')
                                 .send(newUser);
 
+        assert.equal(response.status, 200, 'Response status code should be 200');
+
         const responseGet = await chai
                                 .request(app)
                                 .get('/api/users/5e4b801201ca96379c46b859');
 
         assert.equal(response.status, 200, 'Response status code should be 200');
-        console.log(responseGet.body);
         assert.ownInclude(responseGet.body, newUser, 'User should be updated');
       } catch (err) {
         throw err;
