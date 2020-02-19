@@ -52,9 +52,10 @@ router.delete('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const user = await userModel.findByIdAndUpdate(req.params.id, req.body);
+    
+    if (!user) res.status(404).send("No user found");
     res.status(200).send();
   } catch (err) {
-    console.log(err);
     res.status(500).send(err)
   }
 })

@@ -71,7 +71,7 @@ describe('Users', function() {
   
         const wrongUser = {
           name: 'Thi Nguyen',
-          grade: 10,
+          grade: 20,
         }
   
         const response = await chai
@@ -166,6 +166,29 @@ describe('Users', function() {
         throw err;
       }
     });
+
+    it('Update an non-existent user should return 404', async function() {
+      try {
+        await addUserFromArray(testUserArrays.testUsers);
+        
+        const newUser =
+        {
+          _id: "5e4b801201ca96379c46b859",
+          name: 'Thi Nguyen',
+          grade: 90,
+        };
+        
+        const response = await chai
+                                .request(app)
+                                .put('/api/users/5e4b801201ca963791212123')
+                                .send(newUser);
+
+        assert.equal(response.status, 404, 'Response status code should be 404');
+        assert.notOwnInclude(response.body, newUser, 'User should not be updated');
+      } catch (err) {
+        throw err;
+      }
+    });
   })
 
   describe('Delete User', function(){
@@ -193,6 +216,20 @@ describe('Users', function() {
         assert.equal(responseGet.body.length, 3, 'Response length should be 3');
         assert.notOwnInclude(responseGet.body, testUser, 'User should be deleted');
 
+      } catch (err) {
+        throw err;
+      }
+    });
+
+    it('Delete an non-existent user should return 404', async function() {
+      try {
+        await addUserFromArray(testUserArrays.testUsers);
+        
+        const response = await chai
+                                .request(app)
+                                .delete('/api/users/5e4b801201ca96379c46b123');
+
+        assert.equal(response.status, 404, 'Response status code should be 404');
       } catch (err) {
         throw err;
       }
