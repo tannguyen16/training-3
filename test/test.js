@@ -50,6 +50,25 @@ describe('Users', function() {
           grade: 10,
         }
   
+        const response = await chai
+                                .request(app)
+                                .post('/api/users')
+                                .send(newUser);
+  
+        assert.equal(response.status, 201, 'Status code should be 201');
+        assert.ownInclude(response.body, newUser, 'Response body should contain new user');
+      } catch (err) {
+        throw err;
+      }
+    });
+
+    it('Create and not return a wrong user', async function() {
+      try {
+        const newUser = {
+          name: 'Tan Nguyen',
+          grade: 10,
+        }
+  
         const wrongUser = {
           name: 'Thi Nguyen',
           grade: 10,
@@ -61,8 +80,9 @@ describe('Users', function() {
                                 .send(newUser);
   
         assert.equal(response.status, 201, 'Status code should be 201');
-        assert.ownInclude(response.body, newUser, 'Response body should contain new user');
-        assert.notOwnInclude(response.body, wrongUser, 'Response body should not contain wrong user');
+        assert.notEqual(response.body.name, wrongUser.name, 'Response body name should not be equal to the wrong user name');
+        assert.notEqual(response.body.grade, wrongUser.grade, 'Response body grade should not be equal to the wrong user grade');
+
       } catch (err) {
         throw err;
       }
