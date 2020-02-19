@@ -116,8 +116,6 @@ describe('Users', function() {
         const responseGet = await chai
                                 .request(app)
                                 .get('/api/users');
-          assert.equal(responseGet.body.length == 0, true, 'Results should be empty');
-          assert.equal(responseGet.status, 200, 'Response status code should be 200');
   
         await addUserFromArray(testUserArrays.testUsers);
         
