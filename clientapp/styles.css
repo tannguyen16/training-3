@@ -161,3 +161,7 @@ select {
 .dark #thead-name #thead-grade {
   text-decoration: none;
 }
+
+#error {
+  color: 'red';
+}

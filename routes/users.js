@@ -1,6 +1,7 @@
 var express = require('express');
 var userModel = require('../models/Users');
 var router = express.Router();
+var qs = require('qs');
 
 /* GET users listing. */
 router.get('/', async (req, res) => {
@@ -29,7 +30,6 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   const user = new userModel(req.body);
-
   try {
     await user.save();
     res.status(201).send(user);
@@ -52,7 +52,7 @@ router.delete('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const user = await userModel.findByIdAndUpdate(req.params.id, req.body);
-    
+
     if (!user) res.status(404).send("No user found");
     res.status(200).send();
   } catch (err) {

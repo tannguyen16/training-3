@@ -256,7 +256,7 @@ describe('Users', function() {
         assert.equal(response.body.length, 4, 'Response length should be 4');
         assert.equal(response.status, 200, 'Response status code should be 200');
 
-        for (i = 0; i < response.body.length; i++) {
+        for (let i = 0; i < response.body.length; i++) {
           assert.ownInclude(response.body[i], testUserArrays.testUsersNameAsc[i], 'Users should be sorted ascending by name')
         }
   
@@ -276,7 +276,7 @@ describe('Users', function() {
         assert.equal(response.body.length, 4, 'Response length should be 4');
         assert.equal(response.status, 200, 'Response status code should be 200');
 
-        for (i = 0; i < response.body.length; i++) {
+        for (let i = 0; i < response.body.length; i++) {
           assert.notOwnInclude(response.body[i], testUserArrays.testUsersNameDesc[i], 'Users should be sorted ascending by name')
         }
   
@@ -298,7 +298,7 @@ describe('Users', function() {
         assert.equal(response.body.length, 4, 'Response length should be 4');
         assert.equal(response.status, 200, 'Response status code should be 200');
 
-        for (i = 0; i < response.body.length; i++) {
+        for (let i = 0; i < response.body.length; i++) {
           assert.ownInclude(response.body[i], testUserArrays.testUsersNameDesc[i], 'Users should be sorted descending by name')
         }
   
@@ -318,7 +318,7 @@ describe('Users', function() {
         assert.equal(response.body.length, 4, 'Response length should be 4');
         assert.equal(response.status, 200, 'Response status code should be 200');
 
-        for (i = 0; i < response.body.length; i++) {
+        for (let i = 0; i < response.body.length; i++) {
           assert.notOwnInclude(response.body[i], testUserArrays.testUsersNameAsc[i], 'Users should be sorted descending by name')
         }
   
@@ -340,7 +340,7 @@ describe('Users', function() {
         assert.equal(response.body.length, 4, 'Response length should be 4');
         assert.equal(response.status, 200, 'Response status code should be 200');
 
-        for (i = 0; i < response.body.length; i++) {
+        for (let i = 0; i < response.body.length; i++) {
           assert.ownInclude(response.body[i], testUserArrays.testUsersGradeDesc[i], 'Users should be sorted descending by grade')
         }
   
@@ -366,7 +366,7 @@ describe('Users', function() {
         assert.equal(response.body.length, 4, 'Response length should be 4');
         assert.equal(response.status, 200, 'Response status code should be 200');
 
-        for (i = 0; i < response.body.length; i++) {
+        for (let i = 0; i < response.body.length; i++) {
           assert.notOwnInclude(response.body[i], testUserArrays.testUsersGradeAsc[i], 'Users should be sorted descending by grade')
         }
   

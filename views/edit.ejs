@@ -12,23 +12,9 @@
         <table class="table" id="student-table">
             <thead>
                 <tr>
-                    <th><a href="/?sort=name&dirName=<%= dirName * -1 %>&dirGrade=<%= dirGrade %>" id="thead-name">
-                        <% if (dirName != 1 && dirName != -1) { %>
-                            <h4>Name</h4>
-                        <% } else if (dirName == 1) { %>
-                            <h4>Name ↓</h4>
-                        <% } else { %>
-                            <h4>Name ↑</h4>
-                        <% } %>
+                    <th><a href="/?<%= handleSortQuery('name') %>" id="thead-name">Name
                         </a></th>
-                    <th><a href="/?sort=grade&dirName=<%= dirName %>&dirGrade=<%= dirGrade * -1 %>" id="thead-grade">
-                        <% if (dirGrade != 1 && dirGrade != -1) { %>
-                            <h4>Grade</h4>
-                        <% } else if (dirGrade == 1) { %>
-                            <h4>Grade ↓</h4>
-                        <% } else { %>
-                            <h4>Grade ↑</h4>
-                        <% } %>
+                    <th><a href="/?<%= handleSortQuery('grade') %>" id="thead-grade">Grade
                         </a></th>
                     <th>Options</th>
                 </tr>
@@ -39,20 +25,20 @@
                         <% if(user._id == id) { %> 
                             <td><input id="name-input"
                                 form="updateForm"
-                                type="text" size="8"
+                                type="text"
                                 name="name"
                                 value=<%= name %>
                                 placeholder="Name" required /></td>
                             <td><input id="grade-input"
                                 form="updateForm"
-                                type="tel" maxlength="3"
+                                type="number"
                                 value=<%= grade %>
                                 name="grade"
                                 placeholder="Grade" required /></td>
                             <td>
-                                <a href="/edit/<%= user._id %>/?sort=<%= sort %>&dirName=<%= dirName %>&dirGrade=<%= dirGrade %>&name=<%= name %>&grade=<%= grade %>" class="more-btn">Reset</a>
+                                <a href="/edit/<%= user._id %>/?<%= sortQuery %>&name=<%= name %>&grade=<%= grade %>" class="more-btn">Reset</a>
                                 <button form="updateForm" type="submit" class="more-btn">Save</button>
-                                <a href="/?sort=<%= sort %>&dirName=<%= dirName %>&dirGrade=<%= dirGrade %>" class="more-btn">Cancel</a>
+                                <a href="/?<%= sortQuery %>" class="more-btn">Cancel</a>
                             </td>
                         <% } else { %>
                             <td class="name-col"><span
@@ -63,7 +49,7 @@
                                 <div class="option">
                                     <button class="option-btn">...</button>
                                     <div class="option-list">
-                                    <a href="/edit/<%= user._id %>/?sort=<%= sort %>&dirName=<%= dirName %>&dirGrade=<%= dirGrade %>&name=<%= user.name %>&grade=<%= user.grade %>" class="edit-btn">Edit</a>
+                                    <a href="/edit/<%= user._id %>/?<%= sortQuery %>&name=<%= user.name %>&grade=<%= user.grade %>" class="edit-btn">Edit</a>
                                     <a href="/delete/<%= user._id %>" class="delete-btn">Delete</a>
                                     </div>
                                 </div>
@@ -77,14 +63,16 @@
                     <form id="add-form">
                         <td><input id="name-input"
                                 form="studentForm"
-                                type="text" size="8"
+                                type="text"
                                 name="name"
-                                placeholder="Name" required /></td>
+                                placeholder="Name" required />
+                        </td>
                         <td><input id="grade-input"
                                 form="studentForm"
-                                type="tel" maxlength="3"
+                                type="number"
                                 name="grade"
-                                placeholder="Grade" required /></td>
+                                placeholder="Grade" required />
+                        </td>
                         <td>
                             <div class="option">
                                 <button class="option-btn"
@@ -95,9 +83,18 @@
                         </td>
                     </form>
                 </tr>
+                <tr class='errorRow'>
+                    <td class='errorColumn'>
+                        <div class='error'><%= errorName %></div>
+                    </td>
+                    <td class='errorColumn'>
+                        <div class='error'><%= errorGrade %></div>
+                    </td>
+                    <td class='errorColumn'>
+                    </td>
+                </tr>
             </tfoot>
         </table>
         <form id="studentForm" method="POST" action="/"></form>
-        <form id="updateForm" method="POST" action="/save/<%= id %>/?sort=<%= sort %>&dirName=<%= dirName %>&dirGrade=<%= dirGrade %>"></form>
     </body>
 </html>

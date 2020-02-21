@@ -36,6 +36,7 @@ tr:nth-child(even) {
 }
 
 td {
+  width: 40%;
   font-size: 15px;
   height: 25;
 }
@@ -175,4 +176,20 @@ select {
 
 .more-btn:hover {
   background-color: #815800;
+}
+
+.error {
+  color: #f00;
+  display: block;
+  text-justify: auto;
+}
+
+.errorRow {
+  background-color: #fff;
+  border-width: 0;
+}
+
+.errorColumn {
+  background-color: #fff;
+  border-width: 0;
 }

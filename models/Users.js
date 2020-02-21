@@ -6,7 +6,11 @@ const schema = new mongoose.Schema({
     },
     name: String, 
     grade: Number 
-});
+}, { versionKey: false });
+
+schema.statics.Get = function(where = {}, sort = {}) {
+    return this.find(where).sort(sort);
+}
 
 const User = mongoose.model("Users", schema);
 
