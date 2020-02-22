@@ -30,7 +30,7 @@
                             <div class="option">
                                 <button class="option-btn">...</button>
                                 <div class="option-list">
-                                    <a href="/edit/<%= user._id %>/?<%= sortQuery %>&name=<%= user.name %>&grade=<%= user.grade %>" class="edit-btn">Edit</a>
+                                    <a href="/edit/<%= user._id %>/?name=<%= user.name %>&grade=<%= user.grade %>&<%= sortQuery %>" class="edit-btn">Edit</a>
                                     <a href="/delete/<%= user._id %>" class="delete-btn">Delete</a>
                                 </div>
                             </div>

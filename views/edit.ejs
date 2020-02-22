@@ -28,13 +28,17 @@
                                 type="text"
                                 name="name"
                                 value=<%= name %>
-                                placeholder="Name" required /></td>
+                                placeholder="Name" required />
+                            <div class='error'><%= errorName %></div>
+                            </td>
                             <td><input id="grade-input"
                                 form="updateForm"
                                 type="number"
                                 value=<%= grade %>
                                 name="grade"
-                                placeholder="Grade" required /></td>
+                                placeholder="Grade" required />
+                            <div class='error'><%= errorGrade %></div>
+                            </td>
                             <td>
                                 <a href="/edit/<%= user._id %>/?<%= sortQuery %>&name=<%= name %>&grade=<%= grade %>" class="more-btn">Reset</a>
                                 <button form="updateForm" type="submit" class="more-btn">Save</button>
@@ -83,18 +87,9 @@
                         </td>
                     </form>
                 </tr>
-                <tr class='errorRow'>
-                    <td class='errorColumn'>
-                        <div class='error'><%= errorName %></div>
-                    </td>
-                    <td class='errorColumn'>
-                        <div class='error'><%= errorGrade %></div>
-                    </td>
-                    <td class='errorColumn'>
-                    </td>
-                </tr>
             </tfoot>
         </table>
         <form id="studentForm" method="POST" action="/"></form>
+        <form id="updateForm" method="POST" action="/save/<%= id %>/?name=<%= name %>&grade=<%= grade %>&<%= sortQuery %>"></form>
     </body>
 </html>
