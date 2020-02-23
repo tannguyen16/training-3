@@ -45,13 +45,21 @@
                                 form="studentForm"
                                 type="text"
                                 name="name"
+                                value="<%= (inputs.name) ? inputs.name : '' %>"
                                 placeholder="Name" required />
+                                <% if (errors && errors.name) { %>
+                                    <div class='error'><%= errors.name %></div>
+                                <% } %>
                         </td>
                         <td><input id="grade-input"
                                 form="studentForm"
                                 type="number"
                                 name="grade"
+                                value="<%= (inputs.grade) ? inputs.grade : '' %>"
                                 placeholder="Grade" required />
+                                <% if (typeof errors !== undefined && errors.grade) { %>
+                                    <div class='error'><%= errors.grade %></div>
+                                <% } %>
                         </td>
                         <td>
                             <div class="option">
@@ -63,18 +71,13 @@
                         </td>
                     </form>
                 </tr>
-                <tr class='errorRow'>
-                    <td class='errorColumn'>
-                        <div class='error'><%= errorName %></div>
-                    </td>
-                    <td class='errorColumn'>
-                        <div class='error'><%= errorGrade %></div>
-                    </td>
-                    <td class='errorColumn'>
-                    </td>
-                </tr>
             </tfoot>
         </table>
         <form id="studentForm" method="POST" action="/?<%= sortQuery %>"></form>
+        <script>
+            <% if (errors.name) { %>
+                alert('<%= errors.name %>');
+            <% } %>
+        </script>
     </body>
 </html>

@@ -25,7 +25,7 @@ const renderParams = async (req) => {
     const sortTypes = params.sortType.split(',');
     sortQuery = qs.stringify({sortType : req.query.sortType, sortDir: req.query.sortDir});
     const sortDirections = params.sortDir.split(',');
-    
+
     for (let i = 0; i < sortTypes.length; i++) {
       const type = sortTypes[i];
       const dir = Number(sortDirections[i]);
@@ -65,18 +65,27 @@ const renderParams = async (req) => {
 
 router.post('/', async (req, res) => {
   var newUser = new UserModel(req.body);
+  const inputs = {...req.body};
+  const errors = {};
   try {
-    await studentSchema.validate(newUser);
+    await studentSchema.validate(req.body, { abortEarly: false });
     await newUser.save();
     const params = await renderParams(req);
     const { users, sortQuery, handleSortQuery } = params;
-    res.render('index', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errorName: '', errorGrade: ''});
+    // res.render('index', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errors });
+    res.redirect(`/?${sortQuery}`);
   } catch (err) {
     if(err.errors) {
       const params = await renderParams(req);
       const { users, sortQuery, handleSortQuery } = params;
-      if (err.params.path === 'name') res.render('index', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errorName: err.message, errorGrade: ''});
-      else res.render('index', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errorName: '', errorGrade: err.message});
+
+
+      for(let i = 0; i < err.inner.length; i++) {
+        const validationError = err.inner[i];
+        errors[validationError.path] = validationError.message;
+      }
+
+      res.render('index', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errors, inputs});
     } else {
       next(err);
     }
@@ -85,9 +94,10 @@ router.post('/', async (req, res) => {
 
 router.get('/', async function(req, res, next) {
   try {
+    const inputs = {};
     const params = await renderParams(req);
     const { users, sortQuery, handleSortQuery } = params;
-    res.render('index', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errorName: '', errorGrade: ''});
+    res.render('index', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errors: {}, inputs: {} });
   } catch (err) {
     next(err);
   }
