@@ -68,13 +68,13 @@ router.post('/', async (req, res) => {
   try {
     await studentSchema.validate(newUser);
     await newUser.save();
-    res.redirect('/');
+    const params = await renderParams(req);
+    const { users, sortQuery, handleSortQuery } = params;
+    res.render('index', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errorName: '', errorGrade: ''});
   } catch (err) {
     if(err.errors) {
       const params = await renderParams(req);
-      const users = params.users;
-      const sortQuery = params.sortQuery;
-      const handleSortQuery = params.handleSortQuery;
+      const { users, sortQuery, handleSortQuery } = params;
       if (err.params.path === 'name') res.render('index', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errorName: err.message, errorGrade: ''});
       else res.render('index', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errorName: '', errorGrade: err.message});
     } else {
@@ -88,7 +88,6 @@ router.get('/', async function(req, res, next) {
     const params = await renderParams(req);
     const { users, sortQuery, handleSortQuery } = params;
     res.render('index', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errorName: '', errorGrade: ''});
-
   } catch (err) {
     next(err);
   }
@@ -96,9 +95,9 @@ router.get('/', async function(req, res, next) {
 
 router.get('/delete/:id', async function(req, res, next) {
   try {
+    const user = await UserModel.findByIdAndDelete(req.params.id);
     const params = await renderParams(req);
     const { users, sortQuery, handleSortQuery } = params;
-    const user = await UserModel.findByIdAndDelete(req.params.id);
     if (!user) return;
     res.render('index', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errorName: '', errorGrade: ''});
   } catch (err) {
@@ -121,7 +120,6 @@ router.get('/edit/:id', async function(req, res, next) {
 
 router.post('/save/:id', async function(req, res, next) {
   try {
-    console.log(req);
     await studentSchema.validate(req.body);
     await UserModel.findByIdAndUpdate(req.params.id, req.body);
     const params = await renderParams(req);
