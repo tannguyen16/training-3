@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "mocha --exit"
+    "test": "mocha --exit",
+    "debug": "nodemon --inspect ./bin/www"
   },
   "husky": {
     "hooks": {
-      "pre-push": "npm test"
+      "pre-commit": "npm test && testcafe chrome fe-tests/test.js"
     }
   },
   "dependencies": {
