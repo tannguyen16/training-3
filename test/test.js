@@ -3,7 +3,7 @@ const chaiHttp = require('chai-http');
 const assert = require('chai').assert;
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/training3', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb://localhost:27017/training3_test', {useNewUrlParser: true, useUnifiedTopology: true});
 
 const app = require('../app');
 const UserModel = require('../models/Users');

@@ -1,12 +1,12 @@
 <html>
     <head>
         <title>Student Grade Table</title>
-        <link href="styles.css" rel="stylesheet" />
+        <link href="stylesheets/styles.css" rel="stylesheet" />
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     </head>
-    <body>
+    <body class="dark">
         <nav class="navigation">
-            <a href="./dmindex.html" class="button">Dark Mode</a>
+            <a href="./index.html" class="button">Light Mode</a>
         </nav>
         <h1 class="header">Student Grade Table</h4>
         <table class="table" id="student-table">
@@ -66,12 +66,7 @@
             let nameSorted = SORT.UNSORTED;
             let gradeSorted = SORT.UNSORTED;
 
-            let students = [
-                {id: 1, name: 'Hi there2', grade: 55},
-                {id: 2, name: 'bye there2', grade: 31},
-                {id: 3, name: 'cry here', grade: 75},
-                {id: 4, name: 'go away', grade: 85},
-            ];
+            let students = [];
 
             $(function() {
                 const table = $('#student-table');
@@ -279,10 +274,18 @@
 
                 function renderTable() {
                     tbody.html('');
-                    students.forEach(student => {
-                    addRow(student.id, student.name, student.grade);
-                });
-
+                    $.ajax({
+                        url: `http://localhost:3000/api/users`,
+                        success: function(response) {
+                            students = response;
+                            students.forEach(student => {
+                                addRow(student._id, student.name, student.grade);
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            alert("Error: " + status + " " + error + " " + xhr.status + " " + xhr.statusText)
+                        }
+                    })
                 }
 
                 renderTable();

@@ -27,22 +27,26 @@
                                 form="updateForm"
                                 type="text"
                                 name="name"
-                                value=<%= name %>
+                                value="<%= (inputs.name) ? inputs.name : '' %>"
                                 placeholder="Name" required />
-                            <div class='error'><%= errorName %></div>
+                            <% if (errors && errors.name) { %>
+                                <div class='error'><%= errors.name %></div>
+                            <% } %>
                             </td>
                             <td><input id="grade-input"
                                 form="updateForm"
                                 type="number"
-                                value=<%= grade %>
+                                value="<%= (inputs.grade) ? inputs.grade : '' %>"
                                 name="grade"
                                 placeholder="Grade" required />
-                            <div class='error'><%= errorGrade %></div>
+                            <% if (typeof errors !== undefined && errors.grade) { %>
+                                <div class='error'><%= errors.grade %></div>
+                            <% } %>
                             </td>
                             <td>
-                                <a href="/edit/<%= user._id %>/?<%= sortQuery %>&name=<%= name %>&grade=<%= grade %>" class="more-btn">Reset</a>
-                                <button form="updateForm" type="submit" class="more-btn">Save</button>
-                                <a href="/?<%= sortQuery %>" class="more-btn">Cancel</a>
+                                <a href="/edit/<%= user._id %>/?<%= sortQuery %>" class="more-btn" id="reset-btn">Reset</a>
+                                <button form="updateForm" type="submit" class="more-btn" id="save-btn">Save</button>
+                                <a href="/?<%= sortQuery %>" class="more-btn" id="cancel-btn">Cancel</a>
                             </td>
                         <% } else { %>
                             <td class="name-col"><span
@@ -53,7 +57,7 @@
                                 <div class="option">
                                     <button class="option-btn">...</button>
                                     <div class="option-list">
-                                    <a href="/edit/<%= user._id %>/?<%= sortQuery %>&name=<%= user.name %>&grade=<%= user.grade %>" class="edit-btn">Edit</a>
+                                    <a href="/edit/<%= user._id %>/?<%= sortQuery %>" class="edit-btn">Edit</a>
                                     <a href="/delete/<%= user._id %>/?<%= sortQuery %>" class="delete-btn">Delete</a>
                                     </div>
                                 </div>
@@ -90,6 +94,6 @@
             </tfoot>
         </table>
         <form id="studentForm" method="POST" action="/?<%= sortQuery %>"></form>
-        <form id="updateForm" method="POST" action="/save/<%= id %>/?name=<%= name %>&grade=<%= grade %>&<%= sortQuery %>"></form>
+        <form id="updateForm" method="POST" action="/save/<%= id %>/?<%= sortQuery %>"></form>
     </body>
 </html>

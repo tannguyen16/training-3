@@ -72,19 +72,16 @@ router.post('/', async (req, res) => {
     await newUser.save();
     const params = await renderParams(req);
     const { users, sortQuery, handleSortQuery } = params;
-    // res.render('index', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errors });
     res.redirect(`/?${sortQuery}`);
   } catch (err) {
     if(err.errors) {
       const params = await renderParams(req);
       const { users, sortQuery, handleSortQuery } = params;
 
-
       for(let i = 0; i < err.inner.length; i++) {
         const validationError = err.inner[i];
         errors[validationError.path] = validationError.message;
       }
-
       res.render('index', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errors, inputs});
     } else {
       next(err);
@@ -109,7 +106,7 @@ router.get('/delete/:id', async function(req, res, next) {
     const params = await renderParams(req);
     const { users, sortQuery, handleSortQuery } = params;
     if (!user) return;
-    res.render('index', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errorName: '', errorGrade: ''});
+    res.redirect(`/?${sortQuery}`);
   } catch (err) {
     next(err);
   }
@@ -118,32 +115,37 @@ router.get('/delete/:id', async function(req, res, next) {
 router.get('/edit/:id', async function(req, res, next) {
   try {
     const { id } = req.params;
-    const { name, grade } = req.query;
     const params = await renderParams(req);
     const { users, sortQuery, handleSortQuery } = params;
+    const user = await UserModel.findById(id);
     if (!users) return;
-    res.render('edit', { title: 'Student Grade Table', id, users, sortQuery, handleSortQuery, errorName: '', errorGrade: '', name, grade });
+    res.render('edit', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errors: {}, inputs: {name: user.name, grade: user.grade}, id });
   } catch (err) {
     next(err);
   }
 });
 
 router.post('/save/:id', async function(req, res, next) {
+  let inputs = {...req.body};
+  let errors = {};
   try {
-    await studentSchema.validate(req.body);
+    await studentSchema.validate(req.body, { abortEarly: false });
     await UserModel.findByIdAndUpdate(req.params.id, req.body);
     const params = await renderParams(req);
     const { users, sortQuery, handleSortQuery } = params;
     if (!users) return;
-    res.render('index', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errorName: '', errorGrade: ''});
+    res.redirect(`/?${sortQuery}`);
   } catch (err) {
     if(err.errors) {
       const params = await renderParams(req);
-      const users = params.users;
-      const sortQuery = params.sortQuery;
-      const handleSortQuery = params.handleSortQuery;
-      if (err.params.path === 'name') res.render('edit', { title: 'Student Grade Table', id: req.params.id, users, sortQuery, handleSortQuery, errorName: err.message, errorGrade: '', name: req.query.name, grade: req.query.grade});
-      else res.render('edit', { title: 'Student Grade Table', id: req.params.id, users, sortQuery, handleSortQuery, errorName: '', errorGrade: err.message, name: req.query.name, grade: req.query.grade});
+      const { users, sortQuery, handleSortQuery } = params;
+      console.log(err);
+      for(let i = 0; i < err.inner.length; i++) {
+        const validationError = err.inner[i];
+        errors[validationError.path] = validationError.message;
+      }
+      console.log(errors);
+      res.render('edit', { title: 'Student Grade Table', users, sortQuery, handleSortQuery, errors, inputs, id: req.params.id});
     } else {
       next(err);
     }
